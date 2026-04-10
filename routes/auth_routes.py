@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.user import users
+from models.user import add_user, get_users
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -10,17 +10,11 @@ def register():
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
-    if "username" not in data or "password" not in data:
-        return jsonify({"error": "Missing fields"}), 400
-
-    for user in users:
-        if user["username"] == data["username"]:
+    for user in get_users():
+        if user[0] == data["username"]:
             return jsonify({"error": "User already exists"}), 400
 
-    users.append({
-        "username": data["username"],
-        "password": data["password"]
-    })
+    add_user(data["username"], data["password"])
 
     return jsonify({"message": "User registered successfully"}), 201
 
@@ -32,8 +26,8 @@ def login():
     if not data:
         return jsonify({"error": "No data provided"}), 400
 
-    for user in users:
-        if user["username"] == data.get("username") and user["password"] == data.get("password"):
+    for user in get_users():
+        if user[0] == data.get("username") and user[1] == data.get("password"):
             return jsonify({"message": "Login successful"}), 200
 
     return jsonify({"error": "Invalid credentials"}), 401

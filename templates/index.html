@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Management</title>
+</head>
+<body>
+
+<h2>Register</h2>
+<input id="username" placeholder="Username">
+<input id="password" placeholder="Password">
+<button onclick="register()">Register</button>
+
+<h2>Add Task</h2>
+<input id="task" placeholder="Task">
+<button onclick="addTask()">Add</button>
+
+<h2>Tasks</h2>
+<button onclick="getTasks()">View Tasks</button>
+<ul id="list"></ul>
+
+<script>
+function register() {
+    fetch('/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        })
+    }).then(res => res.json()).then(data => alert(data.message));
+}
+
+function addTask() {
+    fetch('/tasks', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            task: document.getElementById("task").value
+        })
+    }).then(res => res.json()).then(data => alert(data.message));
+}
+
+function getTasks() {
+    fetch('/tasks')
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById("list");
+        list.innerHTML = "";
+        data.forEach(t => {
+            let li = document.createElement("li");
+            li.innerText = t.task;
+            list.appendChild(li);
+        });
+    });
+}
+</script>
+
+</body>
+</html>

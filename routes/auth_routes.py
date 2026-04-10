@@ -17,4 +17,4 @@ def register():
         "password": data["password"]
     })
 
-    return jsonify({"message": "User registered successfully"}), 20
+    return jsonify({"message": "User registered successfully"}), 201
